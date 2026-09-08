@@ -17,11 +17,11 @@ void kmain(uint32_t magic, void *info)
 {
     (void)magic;(void)info;
     
+    init_gdt();
+    init_idt();
     init_interrupt();
 
-    __asm__ volatile ("int3");
-
-    printf("magic: 0x%X, info: %p, %s\n", magic, info, NULL);
+    printf("Hello, kernel!\nmagic=0x%X info=%p\n", magic, info);
 
     halt_cpu_forever();
 }

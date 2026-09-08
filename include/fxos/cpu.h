@@ -165,6 +165,9 @@ static inline __forceinline void write_cr3(uintptr_t pml4)
 void init_idt(void);
 void set_idte(unsigned int index, void *routine, uint8_t attr, uint8_t ist);
 
+void init_gdt(void);
+void set_rsp0(void *rsp0);
+
 #endif /* __ASSEMBLER__ */
 
 #endif

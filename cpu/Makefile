@@ -1,1 +1,2 @@
-OBJECTS := idt.o
+OBJECTS += idt.o
+OBJECTS += gdt.o
