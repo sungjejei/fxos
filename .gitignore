@@ -1,0 +1,14 @@
+# Editor configuration files
+.cache
+.vscode
+compile_commands.json
+
+# Binary files
+*.o
+*.d
+*.a
+*.iso
+/fxos
+
+# Log files
+*.log
