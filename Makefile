@@ -6,9 +6,8 @@
 CC := $(CROSS_COMPILE)gcc
 LD := $(CROSS_COMPILE)ld
 AS := $(CC)
-AR := ar
+AR := $(CROSS_COMPILE)ar
 QEMU := qemu-system-x86_64
-export CC LD AS AR
 
 # Make Flags
 CFLAGS := -ffreestanding -fno-builtin -nostdlib -fno-pic \
@@ -21,7 +20,6 @@ LDFLAGS := -T scripts/linker.ld
 ASFLAGS := $(CFLAGS)
 QEMUFLAGS := -serial stdio -d int -D qemu.log -no-reboot
 ARFLAGS := 
-export CFLAGS LDFLAGS ASFLAGS ARFLAGS
 
 # Subdirectories
 SUBDIRECTORIES := boot/ cpu/ drivers/ init/ kernel/ rtl/
@@ -32,10 +30,14 @@ Q :=
 else
 Q := @
 endif
+
+# Exports
+export CC LD AS AR
+export CFLAGS LDFLAGS ASFLAGS ARFLAGS
 export Q
 
 # PHONY
-.PHONY: all clean iso outdir run FORCE
+.PHONY: all clean iso run FORCE
 
 # Build
 all: fxos
@@ -45,6 +47,8 @@ clean:
 	$(Q)for i in $(SUBDIRECTORIES); do \
 		$(MAKE) -f scripts/Makefile.build TARGET_SUBDIRECTORY=$$i clean --no-print-directory; \
 	done
+	@echo "  CLEAN     /tmp/fxos-build/"
+	$(Q)rm -rf /tmp/fxos-build
 	@echo "  CLEAN     ."
 	$(Q)rm -f disk.iso fxos
 
@@ -70,4 +74,4 @@ fxos: $(addsuffix built-in.a, $(SUBDIRECTORIES))
 
 # Subdirectory build rules
 %/built-in.a: FORCE
-	$(Q)$(MAKE) -f scripts/Makefile.build TARGET_SUBDIRECTORY=$* --no-print-directory
+	$(Q)$(MAKE) -f scripts/Makefile.build TARGET_SUBDIRECTORY=$*/ --no-print-directory

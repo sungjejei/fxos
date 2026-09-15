@@ -4,27 +4,27 @@
 
 OBJECTS :=
 
-include $(TARGET_SUBDIRECTORY)/Makefile
+include $(TARGET_SUBDIRECTORY)Makefile
 
 .PHONY: all clean
 
-all: $(TARGET_SUBDIRECTORY)/built-in.a
+all: $(TARGET_SUBDIRECTORY)built-in.a
 	@true
 
 clean:
 	@echo "  CLEAN     $(TARGET_SUBDIRECTORY)"
-	$(Q)rm -f $(addprefix $(TARGET_SUBDIRECTORY)/, $(OBJECTS)) $(addprefix $(TARGET_SUBDIRECTORY)/, $(OBJECTS:.o=.d))
-	$(Q)rm -f $(TARGET_SUBDIRECTORY)/built-in.a
+	$(Q)rm -f $(addprefix $(TARGET_SUBDIRECTORY), $(OBJECTS)) $(addprefix $(TARGET_SUBDIRECTORY), $(OBJECTS:.o=.d))
+	$(Q)rm -f $(TARGET_SUBDIRECTORY)built-in.a
  
-$(TARGET_SUBDIRECTORY)/built-in.a: $(addprefix $(TARGET_SUBDIRECTORY)/, $(OBJECTS))
+$(TARGET_SUBDIRECTORY)built-in.a: $(addprefix $(TARGET_SUBDIRECTORY), $(OBJECTS))
 	@echo "  AR        $@"
 	$(Q)$(AR) $(ARFLAGS) rcs $@ $^
 
-$(TARGET_SUBDIRECTORY)/%.o: $(TARGET_SUBDIRECTORY)/%.c
+$(TARGET_SUBDIRECTORY)%.o: $(TARGET_SUBDIRECTORY)%.c
 	@echo "  CC        $@"
 	$(Q)$(CC) $(CFLAGS) $< -o $@
 
-$(TARGET_SUBDIRECTORY)/%.o: $(TARGET_SUBDIRECTORY)/%.S
+$(TARGET_SUBDIRECTORY)%.o: $(TARGET_SUBDIRECTORY)%.S
 	@echo "  AS        $@"
 	$(Q)$(AS) $(ASFLAGS) $< -o $@
 
