@@ -22,6 +22,13 @@ void utoa(uint64_t value, char *buffer, unsigned int radix, int lowercase)
 {
     if (radix > 16) panic("Invalid argument passed to 'utoa'");
 
+    if (value == 0)
+    {
+        buffer[0] = '0';
+        buffer[1] = '\0';
+        return;
+    }
+
     const char *digits = lowercase ? "0123456789abcdef" : "0123456789ABCDEF";
     char *head = buffer;
     char *tail = buffer;

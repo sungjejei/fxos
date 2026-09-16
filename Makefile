@@ -22,7 +22,7 @@ QEMUFLAGS := -serial stdio -d int -D qemu.log -no-reboot
 ARFLAGS := 
 
 # Subdirectories
-SUBDIRECTORIES := boot/ cpu/ drivers/ init/ kernel/ rtl/
+SUBDIRECTORIES := boot/ cpu/ drivers/ init/ kernel/ rtl/ mm/
 
 # Echoes
 ifeq ($(V), 1)
