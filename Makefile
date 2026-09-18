@@ -63,6 +63,10 @@ disk.iso: fxos
 	$(Q)grub-mkrescue -o $@ /tmp/fxos-build > /dev/null 2> /dev/null
 
 # Run
+run-debug: disk.iso
+	@echo "  RUN"
+	$(Q)$(QEMU) $(QEMUFLAGS) -s -S -cdrom $<
+
 run: disk.iso
 	@echo "  RUN"
 	$(Q)$(QEMU) $(QEMUFLAGS) -cdrom $<

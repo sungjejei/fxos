@@ -40,7 +40,8 @@ struct frame {
     struct frame *next;
     struct {
         void *freelist;
-        size_t slab_size;
+        struct frame *next;
+        int order;
     } slab;
 };
 
@@ -52,5 +53,7 @@ int init_frames(page_count_t count);
 int init_buddy(page_index_t begin, page_count_t len);
 struct frame *alloc_frame(void);
 void free_frame(struct frame *frame);
+void *kmalloc(size_t len);
+void kfree(void *addr);
 
 #endif
