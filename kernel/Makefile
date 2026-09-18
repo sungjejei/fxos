@@ -1,3 +1,1 @@
-OBJECTS += asm.o
-OBJECTS += interrupt.o
-OBJECTS += panic.o
+OBJECTS := asm.o interrupt.o panic.o kprintf.o

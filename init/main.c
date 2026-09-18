@@ -32,23 +32,15 @@ char *multiboot2_tag_names[] = {
 
 struct multiboot2_mmap *mmap;
 
-static void printf(const char *fmt, ...)
-{
-    va_list args;
-    va_start(args, fmt);
-    vprintfmt((putchar_routine_t)(void*)uart_write, NULL, fmt, args);
-    va_end(args);
-}
-
 static void parse_loader_info(struct multiboot2_info *info)
 {
     struct multiboot2_tag *tag = info->tags;
 
-    printf("multiboot2: GRUB-provided informations\n");
+    kprintf("multiboot2: GRUB-provided informations\n");
 
     while (tag->type != 0)
     {
-        printf("multiboot2-tag: type=%u <%s> size=%u\n", tag->type, multiboot2_tag_names[tag->type], tag->size);
+        kprintf("multiboot2-tag: type=%u <%s> size=%u\n", tag->type, multiboot2_tag_names[tag->type], tag->size);
         tag = (struct multiboot2_tag*)ALIGN_UP((uintptr_t)tag + tag->size, 8);
     }
 }
@@ -61,7 +53,7 @@ void kmain(uint32_t magic, struct multiboot2_info *info)
     init_idt();
     init_interrupt();
 
-    printf("Hello, kernel!\nmagic=0x%X info=%p\n", magic, info);
+    kprintf("Hello, kernel!\nmagic=0x%X info=%p\n", magic, info);
 
     parse_loader_info(info);
 

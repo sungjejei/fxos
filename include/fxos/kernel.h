@@ -31,5 +31,6 @@ struct trap_frame {
 void __noreturn panic(const char *fmt, ...);
 void init_interrupt(void);
 void __noreturn exit_interrupt_service(struct trap_frame *);
+size_t kprintf(const char *fmt, ...);
 
 #endif
