@@ -4,7 +4,7 @@
 #include <fxos/types.h>
 #include <stdarg.h>
 
-typedef void (*putchar_routine_t)(char ch, void *data);
+typedef size_t (*putchar_routine_t)(char ch, void *data);
 
 void *memset(void *dst, int val, size_t len);
 void *memcpy(void *dst, void *src, size_t len);

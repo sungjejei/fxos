@@ -2,10 +2,11 @@
 #include <fxos/kernel.h>
 #include <fxos/rtl.h>
 
-static void put(char ch, void *param)
+static size_t put(char ch, void *param)
 {
     (void)param;
     uart_write(ch);
+    return 1;
 }
 
 size_t kprintf(const char *fmt, ...)

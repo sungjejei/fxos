@@ -1,85 +1,78 @@
 #include <fxos/rtl.h>
 #include <stdarg.h>
 
-static void write_str(putchar_routine_t routine, void *put_param, const char *s)
+static size_t write_str(putchar_routine_t routine, void *put_param, const char *s)
 {
-    while (*s)
-    {
-        routine(*s, put_param);
+    size_t c = 0;
+    
+    while (*s) {
+        c += routine(*s, put_param);
         s++;
     }
+
+    return c;
 }
 
 size_t vprintfmt(putchar_routine_t put, void *put_param, const char *fmt, va_list args)
 {
-    const char *tmp = fmt;
-    while (*fmt)
-    {
-        if (*fmt == '%')
-        {
+    size_t count = 0;
+
+    while (*fmt) {
+        if (*fmt == '%') {
             fmt++;
 
-            switch (*fmt)
-            {
-            case 's':
-            {
+            switch (*fmt) {
+            case 's': {
                 const char *s = va_arg(args, const char *);
-                if (!s) write_str(put, put_param, "<null>");
-                else write_str(put, put_param, s);
+                if (!s) count += write_str(put, put_param, "<null>");
+                else count += write_str(put, put_param, s);
                 break;
             }
-            case 'd':
-            {
+            case 'd': {
                 char buffer[65];
                 itoa(va_arg(args, int64_t), buffer, 10, 0);
-                write_str(put, put_param, buffer);
+                count += write_str(put, put_param, buffer);
                 break;
             }
-            case 'u':
-            {
+            case 'u': {
                 char buffer[65];
                 utoa(va_arg(args, uint64_t), buffer, 10, 0);
-                write_str(put, put_param, buffer);
+                count += write_str(put, put_param, buffer);
                 break;
             }
-            case 'x':
-            {
+            case 'x': {
                 char buffer[65];
                 utoa(va_arg(args, uint64_t), buffer, 16, 1);
-                write_str(put, put_param, buffer);
+                count += write_str(put, put_param, buffer);
                 break;
             }
-            case 'X':
-            {
+            case 'X': {
                 char buffer[65];
                 utoa(va_arg(args, uint64_t), buffer, 16, 0);
-                write_str(put, put_param, buffer);
+                count += write_str(put, put_param, buffer);
                 break;
             }
-            case 'p':
-            {
+            case 'p': {
                 char buffer[65];
                 utoa(va_arg(args, uint64_t), buffer, 16, 0);
-                write_str(put, put_param, "0x");
-                write_str(put, put_param, buffer);
+                count += write_str(put, put_param, "0x");
+                count += write_str(put, put_param, buffer);
                 break;
             }
             case '%':
-            {
-                put('%', put_param);
+                count += put('%', put_param);
                 break;
-            }
             }
 
             fmt++;
         }
-        else
-        {
-            put(*fmt, put_param);
+        else {
+            count += put(*fmt, put_param);
             fmt++;
         }
     }
-    return fmt - tmp;
+
+    return count;
 }
 
 size_t printfmt(putchar_routine_t put, void *put_param, const char *fmt, ...)
