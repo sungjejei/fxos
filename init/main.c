@@ -41,21 +41,42 @@ static void parse_loader_info(struct multiboot2_info *info)
     while (tag->type != 0)
     {
         kprintf("multiboot2-tag: type=%u <%s> size=%u\n", tag->type, multiboot2_tag_names[tag->type], tag->size);
+
+        if (tag->type == MULTIBOOT2_TAG_MMAP)
+            mmap = (struct multiboot2_mmap*)tag;
+        
         tag = (struct multiboot2_tag*)ALIGN_UP((uintptr_t)tag + tag->size, 8);
+    }
+}
+
+static void parse_mmap(struct multiboot2_mmap *mmap)
+{
+    size_t n = (mmap->head.size - sizeof(mmap->head)) / mmap->entry_size;
+
+    kprintf("multiboot2: GRUB-provided memory map\n");
+
+    for (size_t i = 0; i < n; i++)
+    {
+        kprintf("multiboot2-mmap: [%p-%p] %u\n",
+                mmap->entries[i].addr,
+                mmap->entries[i].addr + mmap->entries[i].len - 1,
+                mmap->entries[i].type);
     }
 }
 
 void kmain(uint32_t magic, struct multiboot2_info *info)
 {
-    (void)magic;(void)info;
+    if (magic != MULTIBOOT2_LOADER_MAGIC)
+        panic("fxos must be booted by GRUB");
+
+    kprintf("fxos kernel magic=0x%X info=%p\n", magic, info);
     
     init_gdt();
     init_idt();
     init_interrupt();
 
-    kprintf("Hello, kernel!\nmagic=0x%X info=%p\n", magic, info);
-
     parse_loader_info(info);
+    parse_mmap(mmap);
 
     halt_cpu_forever();
 }
