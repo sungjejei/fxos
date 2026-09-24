@@ -21,11 +21,11 @@ phys_addr_t bootmm_get_limit(void)
     return limit;
 }
 
-int bootmm_init(phys_addr_t base, size_t len)
+int bootmm_init(phys_addr_t base, size_t _limit)
 {
     begin = base;
     tail = base;
-    limit = base + len;
+    limit = _limit;
     return 0;
 }
 

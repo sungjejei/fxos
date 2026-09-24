@@ -2,6 +2,7 @@
 #include <fxos/uart.h>
 #include <fxos/cpu.h>
 #include <fxos/kernel.h>
+#include <fxos/mm.h>
 #include <fxos/rtl.h>
 #include <multiboot2.h>
 
@@ -30,10 +31,17 @@ char *multiboot2_tag_names[] = {
     "Load base address"
 };
 
+uint64_t loader_info[4096];
 struct multiboot2_mmap *mmap;
 
 static void parse_loader_info(struct multiboot2_info *info)
 {
+    if (info->total_size >= sizeof(loader_info))
+        panic("Loader information parsing failed: too big");
+
+    memcpy(loader_info, info, info->total_size);
+    info = (struct multiboot2_info *)loader_info;
+
     struct multiboot2_tag *tag = info->tags;
 
     kprintf("multiboot2: GRUB-provided informations\n");
@@ -77,6 +85,8 @@ void kmain(uint32_t magic, struct multiboot2_info *info)
 
     parse_loader_info(info);
     parse_mmap(mmap);
+
+    mm_init(mmap);
 
     halt_cpu_forever();
 }

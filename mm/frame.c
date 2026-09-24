@@ -70,9 +70,9 @@ static struct frame *pop_frame_from_list(void)
 /*
  * Not a buddy allocator.
  */
-int init_buddy(page_index_t begin, page_count_t len)
+int init_buddy(page_index_t begin, page_index_t limit)
 {
-    page_index_t limit = begin + len;
+    size_t len = limit - begin;
 
     unreserve_frames(begin, len);
 
@@ -81,6 +81,7 @@ int init_buddy(page_index_t begin, page_count_t len)
         frames[begin].order = 0;
         insert_frame_to_list(&frames[begin]);
     }
+
 
     return 0;
 }

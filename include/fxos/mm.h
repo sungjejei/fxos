@@ -3,7 +3,7 @@
 
 #include <fxos/types.h>
 
-extern uint8_t _KERNEL_DIRECT_BASE, _KERNEL_IMAGE_BASE;
+extern uint8_t _KERNEL_DIRECT_BASE, _KERNEL_IMAGE_BASE, _KERNEL_IMAGE_PHYS_START, _KERNEL_IMAGE_PHYS_END;
 
 static inline uintptr_t __forceinline KERNEL_DIRECT_MAP_BASE(void)
 {
@@ -16,6 +16,20 @@ static inline uintptr_t __forceinline KERNEL_IMAGE_MAP_BASE(void)
 {
     uintptr_t addr;
     __asm__ volatile ("movabs %1, %0":"=r"(addr):"i"(&_KERNEL_DIRECT_BASE));
+    return addr;
+}
+
+static inline uintptr_t __forceinline KERNEL_IMAGE_PHYS_START(void)
+{
+    uintptr_t addr;
+    __asm__ volatile ("movabs %1, %0":"=r"(addr):"i"(&_KERNEL_IMAGE_PHYS_START));
+    return addr;
+}
+
+static inline uintptr_t __forceinline KERNEL_IMAGE_PHYS_END(void)
+{
+    uintptr_t addr;
+    __asm__ volatile ("movabs %1, %0":"=r"(addr):"i"(&_KERNEL_IMAGE_PHYS_END));
     return addr;
 }
 
@@ -50,10 +64,13 @@ struct frame *get_frame_by_addr(phys_addr_t addr);
 phys_addr_t get_frame_addr(struct frame *frame);
 struct frame *get_frame_by_addr(phys_addr_t addr);
 int init_frames(page_count_t count);
-int init_buddy(page_index_t begin, page_count_t len);
+int init_buddy(page_index_t begin, page_index_t limit);
 struct frame *alloc_frame(void);
 void free_frame(struct frame *frame);
 void *kmalloc(size_t len);
 void kfree(void *addr);
+
+struct multiboot2_mmap;
+int mm_init(struct multiboot2_mmap *mmap);
 
 #endif
