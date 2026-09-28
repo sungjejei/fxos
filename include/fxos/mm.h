@@ -55,6 +55,7 @@ struct frame {
     struct {
         void *freelist;
         struct frame *next;
+        int count;
         int order;
     } slab;
 };

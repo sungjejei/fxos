@@ -61,6 +61,7 @@ void *kmalloc(size_t len)
     void **next = (void**)slab[order]->slab.freelist;
 
     slab[order]->slab.freelist = *next;
+    slab[order]->slab.count++;
     
     return addr;
 }
@@ -79,4 +80,10 @@ void kfree(void *addr)
 
     *(void**)addr = frame->slab.freelist;
     frame->slab.freelist = addr;
+    frame->slab.count--;
+
+    if (frame->slab.count == 0) {
+        kprintf("Freeing slab frame\n");
+        free_frame(frame);
+    }
 }
