@@ -4,6 +4,10 @@
 #include <fxos/types.h>
 #include <stdarg.h>
 
+/*
+ * Routines must return the number of characters written
+ * by themselves.
+ */
 typedef size_t (*putchar_routine_t)(char ch, void *data);
 
 void *memset(void *dst, int val, size_t len);

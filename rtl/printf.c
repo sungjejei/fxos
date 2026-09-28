@@ -13,6 +13,13 @@ static size_t write_str(putchar_routine_t routine, void *put_param, const char *
     return c;
 }
 
+/*
+ * %u, %x, %X: uint64_t
+ * %d: int64_t
+ * %s: const char *
+ * %p: void *
+ * This implementation doesn't support flags.
+ */
 size_t vprintfmt(putchar_routine_t put, void *put_param, const char *fmt, va_list args)
 {
     size_t count = 0;
@@ -54,7 +61,7 @@ size_t vprintfmt(putchar_routine_t put, void *put_param, const char *fmt, va_lis
             }
             case 'p': {
                 char buffer[65];
-                utoa(va_arg(args, uint64_t), buffer, 16, 0);
+                utoa((uint64_t)va_arg(args, void *), buffer, 16, 0);
                 count += write_str(put, put_param, "0x");
                 count += write_str(put, put_param, buffer);
                 break;
