@@ -21,6 +21,11 @@ ASFLAGS := $(CFLAGS)
 QEMUFLAGS := -serial stdio -d int -D qemu.log -no-reboot
 ARFLAGS := 
 
+# QEMU flags
+ifeq ($(QEMU_NO_DISPLAY), 1)
+QEMUFLAGS += -display none
+endif
+
 # Subdirectories
 SUBDIRECTORIES := boot/ cpu/ drivers/ init/ kernel/ rtl/ mm/
 
