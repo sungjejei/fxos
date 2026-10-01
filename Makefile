@@ -27,7 +27,7 @@ QEMUFLAGS += -display none
 endif
 
 # Subdirectories
-SUBDIRECTORIES := boot/ cpu/ drivers/ init/ kernel/ rtl/ mm/
+SUBDIRECTORIES := boot/ cpu/ drivers/ init/ kernel/ rtl/ mm/ fs/
 
 # Echoes
 ifeq ($(V), 1)

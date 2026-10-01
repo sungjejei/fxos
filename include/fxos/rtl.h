@@ -14,6 +14,8 @@ void *memset(void *dst, int val, size_t len);
 void *memcpy(void *dst, void *src, size_t len);
 void utoa(uint64_t value, char *buffer, unsigned int radix, int lowercase);
 void itoa(int64_t value, char *buffer, unsigned int radix, int lowercase);
+int strcmp(const char *s1, const char *s2);
+int strncmp(const char *s1, const char *s2, size_t len);
 
 size_t printfmt(putchar_routine_t put, void *put_param, const char *fmt, ...);
 size_t vprintfmt(putchar_routine_t put, void* put_param, const char *fmt, va_list args);
