@@ -13,7 +13,8 @@ void init_idt(void)
 
 void set_idte(unsigned int index, void *routine, uint8_t attr, uint8_t ist)
 {
-    if (index >= IDT_COUNT) panic("Invalid argument for 'std_idte()'");
+    if (index >= IDT_COUNT)
+        panic("Invalid argument for 'std_idte()'");
 
     idt[index].attributes = attr;
     idt[index].ist = ist;

@@ -30,8 +30,7 @@ int uart_write(char ch)
 
 int uart_write_str(const char *s)
 {
-    while (*s)
-    {
+    while (*s) {
         uart_write(*s++);
     }
     return 0;

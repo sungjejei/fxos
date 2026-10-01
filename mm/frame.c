@@ -32,8 +32,7 @@ int init_frames(page_count_t count)
     if ((uintptr_t)frames == INVALID_ADDRESS)
         return -1;
 
-    for (page_count_t i = 0; i < count; i++)
-    {
+    for (page_count_t i = 0; i < count; i++) {
         frames[i].refcount = 0;
         frames[i].next = NULL;
         frames[i].order = -1;
@@ -76,12 +75,10 @@ int init_buddy(page_index_t begin, page_index_t limit)
 
     unreserve_frames(begin, len);
 
-    for (; begin < limit; begin++)
-    {
+    for (; begin < limit; begin++) {
         frames[begin].order = 0;
         insert_frame_to_list(&frames[begin]);
     }
-
 
     return 0;
 }

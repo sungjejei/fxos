@@ -20,7 +20,8 @@ void *memcpy(void *dst, void *src, size_t len)
 
 void utoa(uint64_t value, char *buffer, unsigned int radix, int lowercase)
 {
-    if (radix > 16) panic("Invalid argument passed to 'utoa'");
+    if (radix > 16)
+        panic("Invalid argument passed to 'utoa'");
 
     if (value == 0)
     {
@@ -33,16 +34,14 @@ void utoa(uint64_t value, char *buffer, unsigned int radix, int lowercase)
     char *head = buffer;
     char *tail = buffer;
 
-    while (value)
-    {
+    while (value) {
         *tail++ = digits[value % radix];
         value /= radix;
     }
 
     *tail-- = '\0';
 
-    while (tail > head)
-    {
+    while (tail > head) {
         char tmp = *tail;
         *tail = *head;
         *head = tmp;
@@ -56,13 +55,11 @@ void itoa(int64_t value, char *buffer, unsigned int radix, int lowercase)
     uint64_t uvalue;
     int negative = value < 0;
 
-    if (negative)
-    {
+    if (negative) {
         uvalue = ~(uint64_t)value + 1;
         *buffer++ = '-';
     }
-    else
-    {
+    else {
         uvalue = value;
     }
 
