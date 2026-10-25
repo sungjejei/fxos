@@ -20,7 +20,7 @@ ARFLAGS :=
 AS := $(CC)
 ASFLAGS := $(CFLAGS)
 
-ifeq ("$(V)", 1)
+ifeq ($(V), 1)
 Q :=
 else
 Q := @
