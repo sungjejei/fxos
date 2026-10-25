@@ -4,28 +4,47 @@
 
 OBJECTS :=
 
-include $(TARGET_SUBDIRECTORY)Makefile
+include $(TARGET_SUBDIR)Makefile
 
 .PHONY: all clean
 
-all: $(TARGET_SUBDIRECTORY)built-in.a
+CC := gcc
+CFLAGS := -ffreestanding -fno-builtin -nostdlib -fno-pic \
+          -fno-stack-protector -mno-red-zone -fno-pie \
+          -fno-omit-frame-pointer -fcf-protection=none \
+          -mgeneral-regs-only -mno-sse -mno-sse2 -mno-mmx -mno-avx \
+          -mcmodel=kernel -c -Iinclude -g -Og -MMD -MP \
+          -Wall -Wextra
+AR := ar
+ARFLAGS :=
+AS := $(CC)
+ASFLAGS := $(CFLAGS)
+
+ifeq ("$(V)", 1)
+Q :=
+else
+Q := @
+endif
+
+all: $(TARGET_SUBDIR)built-in.a
 	@true
 
 clean:
-	@echo "  CLEAN     $(TARGET_SUBDIRECTORY)"
-	$(Q)rm -f $(addprefix $(TARGET_SUBDIRECTORY), $(OBJECTS)) $(addprefix $(TARGET_SUBDIRECTORY), $(OBJECTS:.o=.d))
-	$(Q)rm -f $(TARGET_SUBDIRECTORY)built-in.a
- 
-$(TARGET_SUBDIRECTORY)built-in.a: $(addprefix $(TARGET_SUBDIRECTORY), $(OBJECTS))
+	@echo "  CLEAN     $(TARGET_SUBDIR)"
+	$(Q)rm -f $(addprefix $(TARGET_SUBDIR), $(OBJECTS)) \
+		$(addprefix $(TARGET_SUBDIR), $(OBJECTS:.o=.d)) \
+		$(TARGET_SUBDIR)built-in.a
+
+$(TARGET_SUBDIR)built-in.a: $(addprefix $(TARGET_SUBDIR), $(OBJECTS))
 	@echo "  AR        $@"
 	$(Q)$(AR) $(ARFLAGS) rcs $@ $^
 
-$(TARGET_SUBDIRECTORY)%.o: $(TARGET_SUBDIRECTORY)%.c
+$(TARGET_SUBDIR)%.o: $(TARGET_SUBDIR)%.c
 	@echo "  CC        $@"
 	$(Q)$(CC) $(CFLAGS) $< -o $@
 
-$(TARGET_SUBDIRECTORY)%.o: $(TARGET_SUBDIRECTORY)%.S
+$(TARGET_SUBDIR)%.o: $(TARGET_SUBDIR)%.S
 	@echo "  AS        $@"
 	$(Q)$(AS) $(ASFLAGS) $< -o $@
 
--include $(addprefix $(TARGET_SUBDIRECTORY), $(OBJECTS:.o=.d))
+-include $(addprefix $(TARGET_SUBDIR), $(OBJECTS:.o=.d))

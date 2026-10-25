@@ -1,81 +1,39 @@
 #
-# Top level Makefile for fxos
+# Top level Makefile for FXOS
 #
 
-# Make Variables
-CC := $(CROSS_COMPILE)gcc
-LD := $(CROSS_COMPILE)ld
-AS := $(CC)
-AR := $(CROSS_COMPILE)ar
-QEMU := qemu-system-x86_64
+SUBDIRS := boot/ cpu/ drivers/ init/ kernel/ mm/ rtl/
 
-# Make Flags
-CFLAGS := -ffreestanding -fno-builtin -nostdlib -fno-pic \
-          -fno-stack-protector -mno-red-zone -fno-pie \
-          -fno-omit-frame-pointer -fcf-protection=none \
-          -mgeneral-regs-only -mno-sse -mno-sse2 -mno-mmx -mno-avx \
-          -mcmodel=kernel -c -Iinclude -g -Og -MMD -MP \
-          -Wall -Wextra
+LD := ld
 LDFLAGS := -T scripts/linker.ld
-ASFLAGS := $(CFLAGS)
-QEMUFLAGS := -serial stdio -d int -D qemu.log -no-reboot
-ARFLAGS := 
 
-# Subdirectories
-SUBDIRECTORIES := boot/ cpu/ drivers/ init/ kernel/ rtl/ mm/
-
-# Echoes
 ifeq ($(V), 1)
 Q :=
 else
 Q := @
 endif
 
-# Exports
-export CC LD AS AR
-export CFLAGS LDFLAGS ASFLAGS ARFLAGS
-export Q
+.PHONY: FORCE all clean iso isoimage
 
-# PHONY
-.PHONY: all clean iso run FORCE
-
-# Build
 all: fxos
 
-# Clean
-clean:
-	$(Q)for i in $(SUBDIRECTORIES); do \
-		$(MAKE) -f scripts/Makefile.build TARGET_SUBDIRECTORY=$$i clean --no-print-directory; \
-	done
-	@echo "  CLEAN     /tmp/fxos-build/"
-	$(Q)rm -rf /tmp/fxos-build
-	@echo "  CLEAN     ."
-	$(Q)rm -f disk.iso fxos
+fxos: $(addsuffix built-in.a, $(SUBDIRS))
+	$(Q)echo "  LD        fxos"
+	$(Q)$(LD) $(LDFLAGS) --start-group $^ --end-group -o fxos
 
-# ISO
-iso: disk.iso
-disk.iso: fxos
-	@echo "  ISO       $@"
-	$(Q)mkdir -p /tmp/fxos-build
-	$(Q)mkdir -p /tmp/fxos-build/boot/grub
-	$(Q)cp $< /tmp/fxos-build/boot/fxos
-	$(Q)cp scripts/grub.cfg /tmp/fxos-build/boot/grub/grub.cfg
-	$(Q)grub-mkrescue -o $@ /tmp/fxos-build > /dev/null 2> /dev/null
-
-# Run
-run-debug: disk.iso
-	@echo "  RUN"
-	$(Q)$(QEMU) $(QEMUFLAGS) -s -S -cdrom $<
-
-run: disk.iso
-	@echo "  RUN"
-	$(Q)$(QEMU) $(QEMUFLAGS) -cdrom $<
-
-# fxos
-fxos: $(addsuffix built-in.a, $(SUBDIRECTORIES))
-	@echo "  LD        $@"
-	$(Q)$(LD) $(LDFLAGS) --start-group $^ --end-group -o $@
-
-# Subdirectory build rules
 %/built-in.a: FORCE
-	$(Q)$(MAKE) -f scripts/Makefile.build TARGET_SUBDIRECTORY=$*/ --no-print-directory
+	$(Q)$(MAKE) -f scripts/Makefile.build --no-print-directory TARGET_SUBDIR=$*/ all
+
+clean:
+	$(Q)for i in $(SUBDIRS); do \
+		$(MAKE) -f scripts/Makefile.build --no-print-directory TARGET_SUBDIR=$$i clean; \
+	done
+	$(Q)echo "  CLEAN     ."
+	$(Q)rm -f fxos disk.iso
+
+iso: disk.iso
+isoimage: disk.iso
+
+disk.iso: fxos
+	$(Q)echo "  ISO       disk.iso"
+	$(Q)scripts/mkisoimage.sh
