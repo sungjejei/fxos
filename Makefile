@@ -4,7 +4,7 @@
 
 SUBDIRS := boot/ cpu/ drivers/ init/ kernel/ mm/ rtl/
 
-LD := ld
+LD := $(CROSS_COMPILE)ld
 LDFLAGS := -T scripts/linker.ld
 QEMU := qemu-system-x86_64
 QEMUFLAGS := -enable-kvm -cpu host -serial stdio

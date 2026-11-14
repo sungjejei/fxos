@@ -8,14 +8,14 @@ include $(TARGET_SUBDIR)Makefile
 
 .PHONY: all clean
 
-CC := gcc
+CC := $(CROSS_COMPILE)gcc
 CFLAGS := -ffreestanding -fno-builtin -nostdlib -fno-pic \
           -fno-stack-protector -mno-red-zone -fno-pie \
           -fno-omit-frame-pointer -fcf-protection=none \
           -mgeneral-regs-only -mno-sse -mno-sse2 -mno-mmx -mno-avx \
           -mcmodel=kernel -c -Iinclude -g -Og -MMD -MP \
           -Wall -Wextra
-AR := ar
+AR := $(CROSS_COMPILE)ar
 ARFLAGS :=
 AS := $(CC)
 ASFLAGS := $(CFLAGS)
