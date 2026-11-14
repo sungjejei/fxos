@@ -80,7 +80,6 @@ void kmain(uint32_t magic, struct multiboot2_info *info)
     kprintf("fxos kernel magic=0x%X info=%p\n", magic, info);
     
     init_gdt();
-    init_idt();
     init_interrupt();
 
     parse_loader_info(info);
