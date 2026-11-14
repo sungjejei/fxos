@@ -69,6 +69,10 @@ size_t vprintfmt(putchar_routine_t put, void *put_param, const char *fmt, va_lis
             case '%':
                 count += put('%', put_param);
                 break;
+
+            default:
+                count += put('%', put_param);
+                count += put(*fmt, put_param);
             }
 
             fmt++;
