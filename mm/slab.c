@@ -134,25 +134,26 @@ void kfree(void *addr)
     struct frame *slab = get_frame_by_addr((virt_addr_t)addr - KERNEL_DIRECT_MAP_BASE());
 
     if (!slab || !(slab->flags & FRAME_SLAB))
-        panic("kfree fatal: invalid address");
+        panic("kfree fatal: invalid address: address=%p", addr);
 
     int index = ((uintptr_t)addr - ALIGN_DOWN(addr, PAGE_SIZE)) / slab->slab.len;
 
     if (free_object(slab, index) != 0)
-        panic("kfree fatal: double free");
+        panic("kfree fatal: double free: address=%p");
 
     /* If the slab is empty, free the slab page frame. */
     if (slab->slab.count == 0) {
-        kprintf("kfree: slab is empty, freeing frame.\n");
-
         int slabs_index = calc_slab_size_index(slab->slab.len);
         struct frame *cur = slabs[slabs_index];
         struct frame *prev = NULL;
 
-        while (cur != slab) {
+        while (slab && cur != slab) {
             prev = cur;
             cur = cur->slab.next;
         }
+
+        if (!slab)
+            panic("kfree fatal: slab allocator corruption: address=%p", addr);
 
         if (!prev)
             slabs[slabs_index] = cur->slab.next;
