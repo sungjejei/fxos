@@ -16,7 +16,7 @@ int mm_init(struct multiboot2_mmap *mmap)
     /*
      * Initialize bootmm.
      */
-    
+
     size_t maxi = 0;
     size_t maxlen = 0;
 
@@ -37,11 +37,11 @@ int mm_init(struct multiboot2_mmap *mmap)
         bootmm_init(ALIGN_UP(KERNEL_IMAGE_PHYS_END(), PAGE_SIZE), entries[maxi].addr + entries[maxi].len);
     else
         bootmm_init(entries[maxi].addr, entries[maxi].addr + entries[maxi].len);
-    
+
     /*
      * Initialize the frames.
      */
-    
+
     phys_addr_t limit = 0;
 
     for (size_t i = 0; i < count; i++)
@@ -55,7 +55,7 @@ int mm_init(struct multiboot2_mmap *mmap)
     /*
      * Initialize the allocator.
      */
-    
+
     for (size_t i = 0; i < count; i++) {
         if (entries[i].addr < 0x100000 || entries[i].type != 1)
             continue;

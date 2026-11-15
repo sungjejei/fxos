@@ -8,7 +8,7 @@ struct frame *slab[SLAB_MAX_ORDER + 1];
 
 static int calc_order(size_t len)
 {
-    if (len <= 8) 
+    if (len <= 8)
         return 0;
     else
         return msb_index(roundup_power_of_two(len)) - 4;

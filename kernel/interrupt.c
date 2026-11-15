@@ -11,9 +11,7 @@ void init_interrupt(void)
     init_idt();
 
     for (unsigned int i = 0; i < IDT_COUNT; i++)
-    {
         set_idte(i, isr_table[i], attr, 0);
-    }
 }
 
 void __noreturn interrupt_service(struct trap_frame *frame)
