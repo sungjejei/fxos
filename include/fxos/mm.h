@@ -45,6 +45,7 @@ typedef size_t page_count_t;
 
 #define FRAME_RESERVED 0x0001
 #define FRAME_BAD 0x0002
+#define FRAME_SLAB 0x0004
 #define MAX_ORDER 0
 
 struct frame {

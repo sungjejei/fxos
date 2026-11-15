@@ -20,6 +20,7 @@ static struct frame *create_slab(size_t size)
         return NULL;
 
     memset(&frame->slab, 0, sizeof(frame->slab));
+    frame->flags |= FRAME_SLAB;
     frame->slab.len = size;
 
     return frame;
@@ -132,7 +133,7 @@ void kfree(void *addr)
 
     struct frame *slab = get_frame_by_addr((virt_addr_t)addr - KERNEL_DIRECT_MAP_BASE());
 
-    if (!slab)
+    if (!slab || !(slab->flags & FRAME_SLAB))
         panic("kfree fatal: invalid address");
 
     int index = ((uintptr_t)addr - ALIGN_DOWN(addr, PAGE_SIZE)) / slab->slab.len;
