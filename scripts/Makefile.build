@@ -26,6 +26,10 @@ else
 Q := @
 endif
 
+ifeq ($(DEBUG), 1)
+CFLAGS += -D_DEBUG
+endif
+
 all: $(TARGET_SUBDIR)built-in.a
 	@true
 
