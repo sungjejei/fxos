@@ -53,10 +53,10 @@ struct frame {
     int order;
     struct frame *next;
     struct {
-        void *freelist;
         struct frame *next;
-        int count;
-        int order;
+        uint64_t bitmap;
+        unsigned int len; /* The size of the each objects */
+        unsigned int count; /* The number of the allocated objects */
     } slab;
 };
 

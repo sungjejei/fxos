@@ -25,5 +25,6 @@ typedef intptr_t ssize_t;
 #define __noreturn __attribute__((noreturn))
 
 #define ALIGN_UP(value, align) (((uintptr_t)value + (uintptr_t)(align - 1)) & ~(uintptr_t)(align - 1))
+#define ALIGN_DOWN(value, align) ((uintptr_t)(value) & ~(uintptr_t)(align - 1))
 
 #endif

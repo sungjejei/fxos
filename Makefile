@@ -7,7 +7,7 @@ SUBDIRS := boot/ cpu/ drivers/ init/ kernel/ mm/ rtl/
 LD := $(CROSS_COMPILE)ld
 LDFLAGS := -T scripts/linker.ld
 QEMU := qemu-system-x86_64
-QEMUFLAGS := -enable-kvm -cpu host -serial stdio
+QEMUFLAGS := -serial stdio
 
 ifeq ($(QEMU_ENABLE_DISPLAY), 1)
 QEMUFLAGS +=
@@ -49,3 +49,7 @@ disk.iso: fxos
 run: disk.iso
 	$(Q)echo "  RUN"
 	$(Q)qemu-system-x86_64 $(QEMUFLAGS) -cdrom disk.iso
+
+run-debug:
+	$(Q)echo " RUN"
+	$(Q)qemu-system-x86_64 $(QEMUFLAGS) -cdrom disk.iso -S -s
