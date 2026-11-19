@@ -147,12 +147,12 @@ void kfree(void *addr)
         struct frame *cur = slabs[slabs_index];
         struct frame *prev = NULL;
 
-        while (slab && cur != slab) {
+        while (cur && cur != slab) {
             prev = cur;
             cur = cur->slab.next;
         }
 
-        if (!slab)
+        if (!cur)
             panic("kfree fatal: slab allocator corruption: address=%p", addr);
 
         if (!prev)
